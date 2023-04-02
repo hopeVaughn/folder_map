@@ -111,7 +111,7 @@ export const FolderInput: React.FC = () => {
   return (
     <div className='min-h-screen bg-gray-100 flex items-center justify-center px-4 sm:px-6 lg:px-8'>
       <div
-        className='p-6 w-full sm:max-w-md md:max-w-lg lg:max-w-xl bg-white shadow-md rounded-md'
+        className='mt-2 p-6 w-full sm:max-w-md md:max-w-lg lg:max-w-xl bg-white shadow-md rounded-md'
         onDrop={handleDrop}
         onDragOver={handleDragOver}
       >

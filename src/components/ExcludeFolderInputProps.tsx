@@ -1,34 +1,29 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 type ExcludeFolderInputProps = {
-  onExcludeFolderChange: (folderName: string) => void;
+  onExcludeFolderChange: (value: string) => void;
 };
 
 export const ExcludeFolderInput: React.FC<ExcludeFolderInputProps> = ({
   onExcludeFolderChange,
 }) => {
-  const [folderToExclude, setFolderToExclude] = useState('');
-
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.value;
-    setFolderToExclude(value);
-    onExcludeFolderChange(value);
+    onExcludeFolderChange(event.target.value);
   };
 
   return (
     <div className='mb-4'>
       <label
-        className='block text-gray-700 text-sm font-bold mb-2'
         htmlFor='folderToExclude'
+        className='block text-sm font-medium text-gray-700'
       >
-        Exclude Folder:
+        Folder to exclude
       </label>
       <input
-        className='shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'
-        id='folderToExclude'
         type='text'
-        placeholder='Folder name to exclude'
-        value={folderToExclude}
+        name='folderToExclude'
+        id='folderToExclude'
+        className='mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm'
         onChange={handleChange}
       />
     </div>

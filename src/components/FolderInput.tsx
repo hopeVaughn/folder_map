@@ -1,6 +1,10 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { FolderDiagram } from './FolderDiagram';
 
+type FolderInputProps = {
+  folderToExclude: string;
+};
+
 type TreeNode = {
   name: string;
   type: 'directory' | 'file';
@@ -8,57 +12,9 @@ type TreeNode = {
   children?: TreeNode[];
 };
 
-async function traverseDirectory(
-  entry: FileSystemDirectoryHandle,
-  path = ''
-): Promise<TreeNode> {
-  const result: TreeNode = {
-    name: entry.name,
-    type: 'directory',
-    path,
-    children: [],
-  };
-
-  for await (const childEntry of entry) {
-    const [name, child] = childEntry;
-    if (child.kind === 'directory') {
-      const childResult = await traverseDirectory(
-        child as FileSystemDirectoryHandle,
-        `${path}/${name}`
-      );
-      result.children!.push(childResult);
-    } else {
-      result.children!.push({
-        name,
-        type: 'file',
-        path: `${path}/${name}`,
-      });
-    }
-  }
-  return result;
-}
-
-function generateASCII(tree: TreeNode, depth = 0, isLast = false): string {
-  const prefix = isLast ? '└── ' : '├── ';
-  const padding = depth ? '│   '.repeat(depth - 1) + prefix : '';
-
-  let output =
-    padding + tree.name + (tree.type === 'directory' ? '/' : '') + '\n';
-
-  if (tree.children) {
-    tree.children.forEach((child: TreeNode, index: number) => {
-      output += generateASCII(
-        child,
-        depth + 1,
-        index === tree.children!.length - 1
-      );
-    });
-  }
-
-  return output;
-}
-
-export const FolderInput: React.FC = () => {
+export const FolderInput: React.FC<FolderInputProps> = ({
+  folderToExclude,
+}) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [asciiDiagram, setAsciiDiagram] = useState('');
 
@@ -67,6 +23,61 @@ export const FolderInput: React.FC = () => {
       inputRef.current.setAttribute('webkitdirectory', 'true');
     }
   }, []);
+
+  async function traverseDirectory(
+    entry: FileSystemDirectoryHandle,
+    path = ''
+  ): Promise<TreeNode> {
+    const result: TreeNode = {
+      name: entry.name,
+      type: 'directory',
+      path,
+      children: [],
+    };
+
+    if (entry.name === folderToExclude) {
+      return result;
+    }
+
+    for await (const childEntry of entry) {
+      const [name, child] = childEntry;
+      if (child.kind === 'directory') {
+        const childResult = await traverseDirectory(
+          child as FileSystemDirectoryHandle,
+          `${path}/${name}`
+        );
+        result.children!.push(childResult);
+      } else {
+        result.children!.push({
+          name,
+          type: 'file',
+          path: `${path}/${name}`,
+        });
+      }
+    }
+    return result;
+  }
+
+  function generateASCII(tree: TreeNode, depth = 0, isLast = false): string {
+    const prefix = isLast ? '└── ' : '├── ';
+    const padding = depth ? '│   '.repeat(depth - 1) + prefix : '';
+
+    let output =
+      padding + tree.name + (tree.type === 'directory' ? '/' : '') + '\n';
+
+    if (tree.children) {
+      tree.children.forEach((child: TreeNode, index: number) => {
+        output += generateASCII(
+          child,
+          depth + 1,
+          index === tree.children!.length - 1
+        );
+      });
+    }
+
+    return output;
+  }
+
   const handleDrop = async (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
     console.log('File(s) dropped');

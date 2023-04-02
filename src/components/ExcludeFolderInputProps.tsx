@@ -1,31 +1,45 @@
-import React from 'react';
+import React, { useState } from 'react';
 
-type ExcludeFolderInputProps = {
-  onExcludeFolderChange: (value: string) => void;
+type ExcludeFoldersInputProps = {
+  onExcludeFolderChange: (folders: string[]) => void;
 };
 
-export const ExcludeFolderInput: React.FC<ExcludeFolderInputProps> = ({
+export const ExcludeFoldersInput: React.FC<ExcludeFoldersInputProps> = ({
   onExcludeFolderChange,
 }) => {
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    onExcludeFolderChange(event.target.value);
+  const [foldersToExclude, setFoldersToExclude] = useState<string[]>([]);
+
+  const handleAddFolder = () => {
+    setFoldersToExclude([...foldersToExclude, '']);
+  };
+
+  const handleFolderChange = (index: number, value: string) => {
+    const newFolders = [...foldersToExclude];
+    newFolders[index] = value;
+    setFoldersToExclude(newFolders);
+    onExcludeFolderChange(newFolders);
+  };
+
+  const handleRemoveFolder = (index: number) => {
+    const newFolders = foldersToExclude.filter((_, idx) => idx !== index);
+    setFoldersToExclude(newFolders);
+    onExcludeFolderChange(newFolders);
   };
 
   return (
-    <div className='mb-4'>
-      <label
-        htmlFor='folderToExclude'
-        className='block text-sm font-medium text-gray-700'
-      >
-        Folder to exclude
-      </label>
-      <input
-        type='text'
-        name='folderToExclude'
-        id='folderToExclude'
-        className='mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm'
-        onChange={handleChange}
-      />
+    <div>
+      {foldersToExclude.map((folder, index) => (
+        <div key={index} className='flex items-center space-x-2'>
+          <input
+            type='text'
+            value={folder}
+            placeholder={`Folder to exclude ${index + 1}`}
+            onChange={(e) => handleFolderChange(index, e.target.value)}
+          />
+          <button onClick={() => handleRemoveFolder(index)}>Remove</button>
+        </div>
+      ))}
+      <button onClick={handleAddFolder}>Add Folder to Exclude</button>
     </div>
   );
 };

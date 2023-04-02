@@ -2,7 +2,7 @@ import React, { useRef, useState, useEffect } from 'react';
 import { FolderDiagram } from './FolderDiagram';
 
 type FolderInputProps = {
-  folderToExclude: string;
+  foldersToExclude: string[];
 };
 
 type TreeNode = {
@@ -13,7 +13,7 @@ type TreeNode = {
 };
 
 export const FolderInput: React.FC<FolderInputProps> = ({
-  folderToExclude,
+  foldersToExclude,
 }) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [asciiDiagram, setAsciiDiagram] = useState('');
@@ -26,6 +26,7 @@ export const FolderInput: React.FC<FolderInputProps> = ({
 
   async function traverseDirectory(
     entry: FileSystemDirectoryHandle,
+    foldersToExclude: string[],
     path = ''
   ): Promise<TreeNode> {
     const result: TreeNode = {
@@ -35,7 +36,7 @@ export const FolderInput: React.FC<FolderInputProps> = ({
       children: [],
     };
 
-    if (entry.name === folderToExclude) {
+    if (foldersToExclude.includes(entry.name)) {
       return result;
     }
 
@@ -44,6 +45,7 @@ export const FolderInput: React.FC<FolderInputProps> = ({
       if (child.kind === 'directory') {
         const childResult = await traverseDirectory(
           child as FileSystemDirectoryHandle,
+          foldersToExclude,
           `${path}/${name}`
         );
         result.children!.push(childResult);
@@ -90,7 +92,11 @@ export const FolderInput: React.FC<FolderInputProps> = ({
           if (handle && handle.kind === 'directory') {
             console.log('Directory dropped');
             const fileEntry = handle as FileSystemDirectoryHandle;
-            const tree = await traverseDirectory(fileEntry);
+            const tree = await traverseDirectory(
+              handle as FileSystemDirectoryHandle,
+              foldersToExclude
+            );
+
             const ascii = generateASCII(tree);
             setAsciiDiagram(ascii);
           } else {
@@ -113,7 +119,7 @@ export const FolderInput: React.FC<FolderInputProps> = ({
     }
     const handle = await window.showDirectoryPicker();
     if (handle) {
-      const tree = await traverseDirectory(handle);
+      const tree = await traverseDirectory(handle, foldersToExclude);
       const ascii = generateASCII(tree);
       setAsciiDiagram(ascii);
     }

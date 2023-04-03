@@ -3,7 +3,8 @@ import { PackageJsonButton } from './PackageJsonButton';
 
 type Props = {
   diagram: string;
-  onClick: (path: string) => Promise<void>;
+  onClick: (path: string) => void;
+  packageJsonPath: string;
 };
 
 export const FolderDiagram: React.FC<Props> = ({ diagram }) => {

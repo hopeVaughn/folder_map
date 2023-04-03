@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { PackageJsonButton } from '../components/PackageJsonButton';
 
 // Define the TreeNode type
 type TreeNode = {

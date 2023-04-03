@@ -1,6 +1,7 @@
 import React, { useRef, useEffect, useCallback } from 'react';
 import { FolderDiagram } from './FolderDiagram';
 import { useFolderVisualizer } from '../utils/useFolderVisualizer';
+import { findPackageJsonContent } from '../utils/findPackageJsonContent';
 
 // Define the FolderInputProps type
 type FolderInputProps = {
@@ -58,7 +59,7 @@ export const FolderInput: React.FC<FolderInputProps> = ({
         </p>
         {/* Render the FolderDiagram component with the ASCII diagram */}
         <div className='bg-gray-100 p-4 mb-4 border-2 border-dashed border-gray-300 rounded'>
-          <FolderDiagram diagram={asciiDiagram} />
+          {/* <FolderDiagram diagram={asciiDiagram} /> */}
         </div>
         {/* Create an invisible file input element for folder selection */}
         <input

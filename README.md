@@ -26,20 +26,20 @@ Throughout the development process, various improvements and refactors were made
 
 ### Desktop
 
-!["Desktop"](https://github.com/hopeVaughn/https://github.com/hopeVaughn/folder_map/blob/main/folder_map_01.png)
+!["Desktop"](https://github.com/hopeVaughn/folder_map/blob/main/folder_map_01.png)
 
 ### Excluded Folders View
 
-!["Desktop"](https://github.com/hopeVaughn/https://github.com/hopeVaughn/folder_map/blob/main/folder_map_02.png)
+!["Desktop"](https://github.com/hopeVaughn/folder_map/blob/main/folder_map_02.png)
 
 ### Rendered Folder Structure
 
-!["Desktop"](https://github.com/hopeVaughn/https://github.com/hopeVaughn/folder_map/blob/main/folder_map_03.png)
+!["Desktop"](https://github.com/hopeVaughn/folder_map/blob/main/folder_map_03.png)
 
 ### Mobile View
 
-!["Mobile"](https://github.com/hopeVaughn/https://github.com/hopeVaughn/folder_map/blob/main/folder_map_04.png)
+!["Mobile"](https://github.com/hopeVaughn/folder_map/blob/main/folder_map_04.png)
 
 ### Mobile View
 
-!["Search"](https://github.com/hopeVaughn/https://github.com/hopeVaughn/folder_map/blob/main/folder_map_05.png)
+!["mobile"](https://github.com/hopeVaughn/folder_map/blob/main/folder_map_05.png)

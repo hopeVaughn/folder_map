@@ -1,6 +1,5 @@
-// Import the useState hook from React
 import { useState } from 'react';
-
+import PackageJsonButton from '../components/PackageJsonButton';
 // Define the TreeNode type
 type TreeNode = {
   name: string;
@@ -58,8 +57,14 @@ const generateASCII = (tree: TreeNode, depth = 0, isLast = false): string => {
   const padding = depth ? '│   '.repeat(depth - 1) + prefix : '';
 
   // Create the output string with the current tree node
-  let output =
-    padding + tree.name + (tree.type === 'directory' ? '/' : '') + '\n';
+  let output = padding + tree.name + (tree.type === 'directory' ? '/' : '');
+
+  // Add the package.json button if the file is package.json
+  if (tree.name === 'package.json') {
+    output += ' [package.json-button]';
+  }
+
+  output += '\n';
 
   // If the tree node has children, generate ASCII for them as well
   if (tree.children) {
@@ -74,6 +79,7 @@ const generateASCII = (tree: TreeNode, depth = 0, isLast = false): string => {
 
   return output;
 };
+
 
 // Custom hook for folder visualization
 export const useFolderVisualizer = (foldersToExclude: string[]) => {
@@ -132,5 +138,6 @@ export const useFolderVisualizer = (foldersToExclude: string[]) => {
     handleDrop,
     handleDragOver,
     handleButtonClick,
+
   };
 };

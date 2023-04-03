@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useCallback } from 'react';
 import { FolderDiagram } from './FolderDiagram';
 import { useFolderVisualizer } from '../utils/useFolderVisualizer';
 
@@ -29,6 +29,11 @@ export const FolderInput: React.FC<FolderInputProps> = ({
       inputRef.current.setAttribute('webkitdirectory', 'true');
     }
   }, []);
+
+  // Memoize the handleButtonClick event handler
+  const memoizedHandleButtonClick = useCallback(handleButtonClick, [
+    handleButtonClick,
+  ]);
 
   return (
     <div className='min-h-screen bg-gray-100 flex items-center justify-center px-4 sm:px-6 lg:px-8'>
@@ -69,7 +74,7 @@ export const FolderInput: React.FC<FolderInputProps> = ({
         <div className='flex flex-col sm:flex-row sm:space-x-4 space-y-4 sm:space-y-0'>
           <button
             className='bg-blue-500 text-white px-4 py-2 rounded shadow hover:bg-blue-600 w-full sm:w-auto'
-            onClick={handleButtonClick}
+            onClick={memoizedHandleButtonClick}
           >
             Select Folder
           </button>

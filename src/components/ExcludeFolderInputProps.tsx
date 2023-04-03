@@ -7,12 +7,15 @@ type ExcludeFoldersInputProps = {
 export const ExcludeFoldersInput: React.FC<ExcludeFoldersInputProps> = ({
   onExcludeFolderChange,
 }) => {
+  // State for storing the folders to exclude
   const [foldersToExclude, setFoldersToExclude] = useState<string[]>([]);
 
+  // Function to handle adding a new folder to exclude
   const handleAddFolder = () => {
     setFoldersToExclude([...foldersToExclude, '']);
   };
 
+  // Function to handle changing the folder name at a specific index
   const handleFolderChange = (index: number, value: string) => {
     const newFolders = [...foldersToExclude];
     newFolders[index] = value;
@@ -20,6 +23,7 @@ export const ExcludeFoldersInput: React.FC<ExcludeFoldersInputProps> = ({
     onExcludeFolderChange(newFolders);
   };
 
+  // Function to handle removing a folder at a specific index
   const handleRemoveFolder = (index: number) => {
     const newFolders = foldersToExclude.filter((_, idx) => idx !== index);
     setFoldersToExclude(newFolders);
@@ -29,6 +33,7 @@ export const ExcludeFoldersInput: React.FC<ExcludeFoldersInputProps> = ({
   return (
     <div className='w-full sm:w-1/2 md:w-1/3 lg:w-1/4'>
       {foldersToExclude.map((folder, index) => (
+        // Render an input field and remove button for each folder to exclude
         <div key={index} className='flex items-center space-x-2 my-2'>
           <input
             type='text'
@@ -45,6 +50,7 @@ export const ExcludeFoldersInput: React.FC<ExcludeFoldersInputProps> = ({
           </button>
         </div>
       ))}
+      {/* Render a button to add a new folder to exclude */}
       <button
         onClick={handleAddFolder}
         className='bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600'

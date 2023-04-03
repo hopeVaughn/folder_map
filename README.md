@@ -1,12 +1,20 @@
-## Introduction
+# Folder Visualization Application
 
-This document provides a brief overview of a React application that allows users to generate an ASCII diagram based on the folder structure of a drag-and-dropped folder. The application is built using various technologies, including TypeScript, Tailwind CSS, and React.
+This project is a web-based folder visualization application that generates an ASCII diagram of a folder structure. Users can interact with the application through a drag-and-drop interface or by clicking a button to select a folder. The application allows users to exclude specific folders from the visualization by providing a list of folder names to be excluded.
 
-## Description
+## Main Components
 
-The application is designed to allow users to drag and drop a folder into an input field, which generates an ASCII diagram based on the folder structure. The front-end is built using TypeScript and React, with Tailwind CSS for styling. The necessary information to generate the ASCII diagram will be stored in local storage instead of a database.
+1. **FolderMappingApp**: The main container component that includes the `ExcludeFoldersInput` and `FolderInput` components. It manages the state for the folders to be excluded and passes it down to the child components.
 
-The main page component is rendered in `App.tsx`, with several other components used to make up the page. The back-end server code is written in TypeScript.
+2. **ExcludeFoldersInput**: This component allows users to input the names of folders they want to exclude from the visualization. It provides an interface to add or remove folders to be excluded and passes the updated list of folders to the parent component `FolderMappingApp`.
+
+3. **FolderInput**: This component handles the folder selection and generates the ASCII diagram of the folder structure. It receives the list of folders to be excluded as a prop and uses the custom hook `useFolderVisualizer` to handle the folder traversal and ASCII diagram generation.
+
+4. **FolderDiagram**: A simple component that displays the generated ASCII diagram of the folder structure.
+
+5. **useFolderVisualizer**: A custom hook that handles the core logic of traversing the folder structure, generating the ASCII diagram, and managing the drag-and-drop events.
+
+Throughout the development process, various improvements and refactors were made to the code to ensure it is more readable and maintainable. These changes include adding appropriate comments to explain the logic and purpose of different parts of the code, as well as improving the structure and organization of the components.
 
 ## Technologies used
 

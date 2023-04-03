@@ -1,5 +1,6 @@
-import { useState } from 'react';
-import PackageJsonButton from '../components/PackageJsonButton';
+import React, { useState } from 'react';
+import { PackageJsonButton } from '../components/PackageJsonButton';
+
 // Define the TreeNode type
 type TreeNode = {
   name: string;
@@ -80,12 +81,11 @@ const generateASCII = (tree: TreeNode, depth = 0, isLast = false): string => {
   return output;
 };
 
-
 // Custom hook for folder visualization
 export const useFolderVisualizer = (foldersToExclude: string[]) => {
   // State for storing the generated ASCII diagram
   const [asciiDiagram, setAsciiDiagram] = useState('');
-
+  const [diagramJSX, setDiagramJSX] = useState<JSX.Element[]>([]); // State for storing the generated ASCII diagram as JSX elements
   // Handle drop event for drag-and-drop
   const handleDrop = async (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
@@ -138,6 +138,5 @@ export const useFolderVisualizer = (foldersToExclude: string[]) => {
     handleDrop,
     handleDragOver,
     handleButtonClick,
-
   };
 };

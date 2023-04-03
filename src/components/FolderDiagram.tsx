@@ -1,8 +1,9 @@
 import { findPackageJsonContent } from '../utils/findPackageJsonContent';
-import PackageJsonButton from './PackageJsonButton';
+import { PackageJsonButton } from './PackageJsonButton';
 
 type Props = {
   diagram: string;
+  onClick: (path: string) => Promise<void>;
 };
 
 export const FolderDiagram: React.FC<Props> = ({ diagram }) => {
@@ -43,7 +44,7 @@ export const FolderDiagram: React.FC<Props> = ({ diagram }) => {
         <div key={i} className='flex items-center'>
           <div className='flex-grow whitespace-pre-wrap'>{line}</div>
           <div>
-            <PackageJsonButton onClick={() => handleClick(path)} />
+            <PackageJsonButton path={path} onClick={handleClick} />
           </div>
         </div>
       );

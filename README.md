@@ -16,7 +16,7 @@ This project is a web-based folder visualization application that generates an A
 
 ## Technologies used
 
-- TypeScript for both front-end and back-end development
+- TypeScript for front-end development
 - React as the front-end framework
 - Tailwind CSS for styling
 

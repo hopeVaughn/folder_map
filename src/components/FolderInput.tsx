@@ -2,14 +2,19 @@ import React, { useRef, useEffect } from 'react';
 import { FolderDiagram } from './FolderDiagram';
 import { useFolderVisualizer } from '../utils/useFolderVisualizer';
 
+// Define the FolderInputProps type
 type FolderInputProps = {
   foldersToExclude: string[];
 };
 
+// Create the FolderInput functional component
 export const FolderInput: React.FC<FolderInputProps> = ({
   foldersToExclude,
 }) => {
+  // Create a ref for the file input element
   const inputRef = useRef<HTMLInputElement>(null);
+
+  // Get the hook values and functions from useFolderVisualizer
   const {
     asciiDiagram,
     setAsciiDiagram,
@@ -18,6 +23,7 @@ export const FolderInput: React.FC<FolderInputProps> = ({
     handleButtonClick,
   } = useFolderVisualizer(foldersToExclude);
 
+  // Set the webkitdirectory attribute for the input element on component mount
   useEffect(() => {
     if (inputRef.current) {
       inputRef.current.setAttribute('webkitdirectory', 'true');
@@ -45,18 +51,21 @@ export const FolderInput: React.FC<FolderInputProps> = ({
         <p className='mb-4 text-gray-500'>
           Drag and drop a folder onto the area below or click "Select Folder"
         </p>
+        {/* Render the FolderDiagram component with the ASCII diagram */}
         <div className='bg-gray-100 p-4 mb-4 border-2 border-dashed border-gray-300 rounded'>
           <FolderDiagram diagram={asciiDiagram} />
         </div>
+        {/* Create an invisible file input element for folder selection */}
         <input
           type='file'
           ref={inputRef}
           style={{ display: 'none' }}
           onChange={async (event) => {
             const input = event.target as HTMLInputElement;
-            input.value = ''; // Add this line to reset the input and close the file picker
+            input.value = ''; // To reset the input and close the file picker
           }}
         />
+        {/* Render buttons for folder selection and clearing the diagram */}
         <div className='flex flex-col sm:flex-row sm:space-x-4 space-y-4 sm:space-y-0'>
           <button
             className='bg-blue-500 text-white px-4 py-2 rounded shadow hover:bg-blue-600 w-full sm:w-auto'

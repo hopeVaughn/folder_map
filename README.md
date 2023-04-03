@@ -14,8 +14,6 @@ This project is a web-based folder visualization application that generates an A
 
 5. **useFolderVisualizer**: A custom hook that handles the core logic of traversing the folder structure, generating the ASCII diagram, and managing the drag-and-drop events.
 
-Throughout the development process, various improvements and refactors were made to the code to ensure it is more readable and maintainable. These changes include adding appropriate comments to explain the logic and purpose of different parts of the code, as well as improving the structure and organization of the components.
-
 ## Technologies used
 
 - TypeScript for both front-end and back-end development

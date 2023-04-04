@@ -1,8 +1,8 @@
-import React, { useRef, useEffect, useCallback } from 'react';
+import React, { useRef, useEffect, useCallback, useState } from 'react';
 import { FolderDiagram } from './FolderDiagram';
 import { useFolderVisualizer } from '../utils/useFolderVisualizer';
 import { findPackageJsonContent } from '../utils/findPackageJsonContent';
-
+import { PackageJsonModal } from './PackageJsonModal';
 // Define the FolderInputProps type
 type FolderInputProps = {
   foldersToExclude: string[];
@@ -12,6 +12,21 @@ type FolderInputProps = {
 export const FolderInput: React.FC<FolderInputProps> = ({
   foldersToExclude,
 }) => {
+  const [packageJsonContent, setPackageJsonContent] = useState<string | null>(
+    null
+  );
+  const [showModal, setShowModal] = useState(false);
+
+  const handlePackageJsonClick = async (
+    event: React.MouseEvent,
+    path: string
+  ) => {
+    event.stopPropagation(); // Prevent the onDrop event from firing
+    const content = await findPackageJsonContent(path);
+    setPackageJsonContent(content);
+    setShowModal(true);
+  };
+
   // Create a ref for the file input element
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -48,7 +63,7 @@ export const FolderInput: React.FC<FolderInputProps> = ({
           {asciiDiagram && (
             <button
               className='bg-red-500 text-white px-4 py-2 rounded shadow hover:bg-red-600'
-              onClick={() => setAsciiDiagram('')}
+              onClick={() => setAsciiDiagram([])}
             >
               Clear
             </button>
@@ -59,36 +74,39 @@ export const FolderInput: React.FC<FolderInputProps> = ({
         </p>
         {/* Render the FolderDiagram component with the ASCII diagram */}
         <div className='bg-gray-100 p-4 mb-4 border-2 border-dashed border-gray-300 rounded'>
-          {/* <FolderDiagram diagram={asciiDiagram} /> */}
+          <FolderDiagram
+            diagram={asciiDiagram}
+            onPackageJsonClick={(event, path) =>
+              handlePackageJsonClick(event, path)
+            }
+          />
         </div>
         {/* Create an invisible file input element for folder selection */}
-        <input
-          type='file'
-          ref={inputRef}
-          style={{ display: 'none' }}
-          onChange={async (event) => {
-            const input = event.target as HTMLInputElement;
-            input.value = ''; // To reset the input and close the file picker
-          }}
-        />
+        <input type='file' ref={inputRef} style={{ display: 'none' }} />
         {/* Render buttons for folder selection and clearing the diagram */}
         <div className='flex flex-col sm:flex-row sm:space-x-4 space-y-4 sm:space-y-0'>
           <button
             className='bg-blue-500 text-white px-4 py-2 rounded shadow hover:bg-blue-600 w-full sm:w-auto'
-            onClick={memoizedHandleButtonClick}
+            onClick={(event) => memoizedHandleButtonClick(event)}
           >
             Select Folder
           </button>
           {asciiDiagram && (
             <button
               className='bg-red-500 text-white px-4 py-2 rounded shadow hover:bg-red-600 w-full sm:w-auto'
-              onClick={() => setAsciiDiagram('')}
+              onClick={() => setAsciiDiagram([])}
             >
               Clear
             </button>
           )}
         </div>
       </div>
+      {showModal && (
+        <PackageJsonModal
+          content={packageJsonContent}
+          onClose={() => setShowModal(false)}
+        />
+      )}
     </div>
   );
 };

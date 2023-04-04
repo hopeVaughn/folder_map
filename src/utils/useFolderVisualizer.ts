@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 
 // Define the TreeNode type
 type TreeNode = {
@@ -13,7 +13,12 @@ const traverseDirectory = async (
   entry: FileSystemDirectoryHandle,
   foldersToExclude: string[],
   path = ''
-): Promise<TreeNode> => {
+): Promise<TreeNode | null> => {
+  // Exclude the folder if it's in the foldersToExclude array
+  if (foldersToExclude.includes(entry.name)) {
+    return null;
+  }
+
   // Initialize the tree node with default values
   const result: TreeNode = {
     name: entry.name,
@@ -21,11 +26,6 @@ const traverseDirectory = async (
     path,
     children: [],
   };
-
-  // Exclude the folder if it's in the foldersToExclude array
-  if (foldersToExclude.includes(entry.name)) {
-    return result;
-  }
 
   // Iterate through the directory entries
   for await (const childEntry of entry) {
@@ -37,7 +37,9 @@ const traverseDirectory = async (
         foldersToExclude,
         `${path}/${name}`
       );
-      result.children!.push(childResult);
+      if (childResult) {
+        result.children!.push(childResult);
+      }
     } else {
       // If the child entry is a file, add it to the children array
       result.children!.push({
@@ -51,28 +53,28 @@ const traverseDirectory = async (
 };
 
 // Generate an ASCII diagram of the tree structure
-const generateASCII = (tree: TreeNode, depth = 0, isLast = false): string => {
-  // Set the prefix and padding based on the depth and whether the item is the last in its level
+const generateASCII = (
+  tree: TreeNode | null,
+  depth = 0,
+  isLast = false
+): Array<{ text: string; isPackageJson: boolean; path: string }> => {
+  if (!tree) return [];
+
   const prefix = isLast ? '└── ' : '├── ';
   const padding = depth ? '│   '.repeat(depth - 1) + prefix : '';
 
-  // Create the output string with the current tree node
-  let output = padding + tree.name + (tree.type === 'directory' ? '/' : '');
+  const output = [
+    {
+      text: padding + tree.name + (tree.type === 'directory' ? '/' : ''),
+      isPackageJson: tree.name === 'package.json',
+      path: tree.path,
+    },
+  ];
 
-  // Add the package.json button if the file is package.json
-  if (tree.name === 'package.json') {
-    output += ' [package.json-button]';
-  }
-
-  output += '\n';
-
-  // If the tree node has children, generate ASCII for them as well
   if (tree.children) {
     tree.children.forEach((child: TreeNode, index: number) => {
-      output += generateASCII(
-        child,
-        depth + 1,
-        index === tree.children!.length - 1
+      output.push(
+        ...generateASCII(child, depth + 1, index === tree.children!.length - 1)
       );
     });
   }
@@ -83,8 +85,7 @@ const generateASCII = (tree: TreeNode, depth = 0, isLast = false): string => {
 // Custom hook for folder visualization
 export const useFolderVisualizer = (foldersToExclude: string[]) => {
   // State for storing the generated ASCII diagram
-  const [asciiDiagram, setAsciiDiagram] = useState('');
-  const [diagramJSX, setDiagramJSX] = useState<JSX.Element[]>([]); // State for storing the generated ASCII diagram as JSX elements
+  const [asciiDiagram, setAsciiDiagram] = useState<Array<{ text: string; isPackageJson: boolean; path: string }>>([]);
   // Handle drop event for drag-and-drop
   const handleDrop = async (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
@@ -121,14 +122,22 @@ export const useFolderVisualizer = (foldersToExclude: string[]) => {
   };
 
   // Handle button click for folder selection
-  const handleButtonClick = async () => {
-    const handle = await window.showDirectoryPicker();
-    if (handle) {
-      const tree = await traverseDirectory(handle, foldersToExclude);
+  const handleButtonClick = useCallback(async (event: React.MouseEvent) => {
+    event.preventDefault();
+    try {
+      const directoryHandle = await window.showDirectoryPicker();
+      const tree = await traverseDirectory(
+        directoryHandle,
+        foldersToExclude,
+        ''
+      );
       const ascii = generateASCII(tree);
       setAsciiDiagram(ascii);
+    } catch (error) {
+      console.error(error);
     }
-  };
+  }, [foldersToExclude]);
+
 
   // Return values and functions to be used by the component
   return {

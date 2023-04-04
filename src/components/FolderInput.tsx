@@ -22,7 +22,11 @@ export const FolderInput: React.FC<FolderInputProps> = ({
     path: string
   ) => {
     event.stopPropagation(); // Prevent the onDrop event from firing
-    const content = await findPackageJsonContent(path);
+
+    // Use fetch to read the contents of the package.json file
+    const response = await fetch(path);
+    const content = await response.text();
+
     setPackageJsonContent(content);
     setShowModal(true);
   };
